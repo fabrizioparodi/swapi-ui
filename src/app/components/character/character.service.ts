@@ -15,7 +15,7 @@ export class CharacterService {
   }
 
   getCharactersByIds(ids: string[]): Promise<Character[]> {
-    const promises = ids.map(id => this.http.get<Character>(`${environment.swapiUrl}/people/${id}`).toPromise());
+    const promises = ids.map(id => this.http.get<Character>(`${environment.swapiUrl}/people/${id}/`).toPromise());
     return Promise.all(promises).then(([...characters]) => {
       return characters.map(char => {
         char.films.forEach((film: any, idx: number) => {

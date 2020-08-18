@@ -2,18 +2,19 @@
   "name": "swapi-ui",
   "description": "Star Wars UI to display data from SWAPI",
   "version": "0.0.0",
+  "author": "Fabrizio Parodi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabrizioparodi/swapi-ui.git"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
-  },
-  "author": "Fabrizio Parodi",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fabrizioparodi/swapi-ui.git"
+    "e2e": "ng e2e",
+    "deploy": "ng build && cd dist/swapi-ui && firebase deploy"
   },
   "private": true,
   "dependencies": {
