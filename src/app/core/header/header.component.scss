@@ -1,0 +1,15 @@
+.header-container {
+  min-height: 100px;
+}
+
+.header-logo {
+  margin: 0 auto;
+  width: 300px;
+  height: 150px;
+
+  img {
+    margin-top: 10px;
+    width: inherit;
+    height: inherit;
+  }
+}

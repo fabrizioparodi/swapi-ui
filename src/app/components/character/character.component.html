@@ -1,0 +1,44 @@
+<div class="center w-90 w-90-l mw-100-m w-90-ns">
+  <h1 *ngIf="!selectedFilm" class="center yellow">All Characters with pagination</h1>
+  <h1 *ngIf="selectedFilm" class="center yellow">Characters from Film: {{ selectedFilm.title }}</h1>
+  <mat-card class="mat-card mb3 mr3">
+    <mat-form-field class="w-100" appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input matInput #val placeholder="Enter name, eye color, gender, film names..." (keyup)="filter(val.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </mat-card>
+</div>
+
+<span *ngIf="!loading">
+  <div class="w-100 justify-center" fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div fxFlex="30%" fxFlex.xs="90%" fxFlex.sm="30%" *ngFor="let elem of datasource">
+      <mat-card class="mat-elevation-z4 medium-card">
+        <mat-card-header>
+          <div mat-card-avatar class="header-image"></div>
+          <mat-card-title>{{ elem.name }}</mat-card-title>
+          <mat-card-subtitle>{{ elem.birth_year }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div><b>Eye color:</b> {{ elem.eye_color }}</div>
+          <div><b>Gender:</b> {{ elem.gender }}</div>
+          <div><b>Films:</b></div>
+          <ul>
+            <li class="pointer dark-blue hover-light-blue" *ngFor="let film of elem.films"
+                (click)="showFilmOpening(film)">{{ film.title }}</li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</span>
+
+<div *ngIf="characters && length > 0" class="mt3 w-90 center">
+  <mat-paginator [length]="length"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOptions"
+                 [showFirstLastButtons]="true"
+                 [pageIndex]="pageIndex"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
