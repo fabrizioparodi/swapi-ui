@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {HttpStatusService} from "../http.status.service";
 import {Store} from "@ngrx/store";
 import {SwapiState} from "../store/swapi.state";
-import {BeginGetCharactersAction, GetCharacterAction} from "../store/swapi.actions";
+import {BeginGetCharactersAction} from "../store/swapi.actions";
 import {Router} from "@angular/router";
 
 @Component({
@@ -25,7 +25,6 @@ export class HeaderComponent implements OnInit {
   }
 
   navigate() {
-    this.store.dispatch(GetCharacterAction());
     this.store.dispatch(BeginGetCharactersAction(null));
     this.router.navigate(['character']);
   }

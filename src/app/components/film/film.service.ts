@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable, ReplaySubject} from "rxjs";
+import {ReplaySubject} from "rxjs";
 import {Film} from "../shared/model/film";
 import {ApiResponse} from "../shared/model/api.response";
 import {environment} from "../../../environments/environment";
@@ -10,24 +10,19 @@ import {environment} from "../../../environments/environment";
 })
 export class FilmService {
 
-  private dataSubject$ = new ReplaySubject<Film[]>(1);
-  private _results: Film[];
+  private readonly dataSubject$ = new ReplaySubject<ApiResponse<Film[]>>(1);
 
   constructor(private http: HttpClient) {
+    this.fetchFilms();
   }
 
-  private fetchFilms() {
-    return this.http.get<ApiResponse<Film[]>>(`${environment.swapiUrl}/films/`)
-      .subscribe(res => {
-        this.dataSubject$.next(res.results);
-        this._results = res.results;
-      });
+  fetchFilms() {
+    this.http
+      .get<ApiResponse<Film[]>>(`${environment.swapiUrl}/films/`)
+      .subscribe(this.dataSubject$);
   }
 
-  getFilms(): Observable<Film[]> {
-    if (!this._results) {
-      this.fetchFilms();
-    }
+  getFilms() {
     return this.dataSubject$.asObservable();
   }
 }

@@ -14,8 +14,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {HttpStatusInterceptor} from "./core/interceptor/http.status.interceptor";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {StoreModule} from '@ngrx/store';
-import {ServiceWorkerModule} from '@angular/service-worker';
-import {environment} from '../environments/environment';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {SwapiReducer} from "./core/store/swapi.reducers";
 import {EffectsModule} from "@ngrx/effects";
 import {SwapiEffects} from "./core/store/swapi.effects";
@@ -26,6 +25,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {FormsModule} from "@angular/forms";
 import {MatInputModule} from "@angular/material/input";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {environment} from "../environments/environment";
+import {ServiceWorkerModule} from "@angular/service-worker";
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
     MatIconModule,
     StoreModule.forRoot({state: SwapiReducer}),
     EffectsModule.forRoot([SwapiEffects]),
+    StoreDevtoolsModule.instrument({logOnly: environment.production}),
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: HttpStatusInterceptor, multi: true}],

@@ -1,27 +1,25 @@
 import {Action, createReducer, on} from '@ngrx/store';
 import * as SwapiActions from './swapi.actions';
-import {SwapiState, initializeState} from './swapi.state';
-
-const initialState = initializeState();
+import {initialState, SwapiState} from './swapi.state';
+import {Film} from "../../components/shared/model/film";
+import {Character} from "../../components/shared/model/character";
+import {ApiResponse} from "../../components/shared/model/api.response";
 
 const reducer = createReducer(
   initialState,
-  on(SwapiActions.GetFilmAction, state => {
+  on(SwapiActions.BeginGetFilmsAction, (state: SwapiState) => {
     return {...state, loading: true}
   }),
-  on(SwapiActions.SuccessGetFilmAction, (state: SwapiState, {payload}) => {
-    return {...state, loading: false, error: null, films: payload};
-  }),
-  on(SwapiActions.GetCharacterAction, state => {
-    return {...state, loading: true};
+  on(SwapiActions.SuccessGetFilmAction, (state: SwapiState, payload: ApiResponse<Film[]>) => {
+    return {...state, loading: false, error: null, films: payload.results};
   }),
   on(SwapiActions.BeginGetCharactersAction, (state: SwapiState, {payload}) => {
-    return {...state, loading: true, charactersIds: [], selectedFilm: null};
+    return {...state, loading: true, selectedFilm: null};
   }),
-  on(SwapiActions.BeginGetCharactersByIdAction, (state: SwapiState, {payload}) => {
-    return {...state, loading: true, charactersIds: payload.ids, selectedFilm: payload.selectedFilm};
+  on(SwapiActions.BeginGetCharactersByFilmAction, (state: SwapiState, payload: Film) => {
+    return {...state, loading: true, selectedFilm: payload};
   }),
-  on(SwapiActions.SuccessGetCharacterAction, (state: SwapiState, {payload}) => {
+  on(SwapiActions.SuccessGetCharacterAction, (state: SwapiState, payload: ApiResponse<Character[]>) => {
     return {...state, loading: false, error: null, characters: payload};
   }),
   on(SwapiActions.ErrorAction, (state: SwapiState, error: Error) => {
@@ -31,7 +29,7 @@ const reducer = createReducer(
 );
 
 export function SwapiReducer(
-  state: SwapiState | undefined,
+  state: SwapiState,
   action: Action
 ): SwapiState {
   return reducer(state, action);

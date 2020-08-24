@@ -5,12 +5,12 @@ import {Film} from "../shared/model/film";
 import {PageEvent} from "@angular/material/paginator";
 import {ActivatedRoute} from "@angular/router";
 import {select, Store} from "@ngrx/store";
-import {SwapiState} from "../../core/store/swapi.state";
+import {AppState, SwapiState} from "../../core/store/swapi.state";
 import {Observable} from "rxjs";
-import {BeginGetCharactersAction, GetCharacterAction} from "../../core/store/swapi.actions";
+import {BeginGetCharactersAction} from "../../core/store/swapi.actions";
 import {AnimatedOpeningComponent} from "../shared/animated-opening/animated-opening.component";
 import {MatDialog} from "@angular/material/dialog";
-import {AppState, selectSwapi} from "../../core/store/swapi.selectors";
+import {selectSwapi} from "../../core/store/swapi.selectors";
 
 @Component({
   selector: 'app-character',
@@ -21,7 +21,6 @@ export class CharacterComponent implements AfterContentChecked {
   state$: Observable<SwapiState>;
   datasource: Character[];
   characters: Character[];
-  charactersIds: string[];
   selectedFilm: Film;
   loading: boolean;
   filterValue: string = '';
@@ -35,10 +34,9 @@ export class CharacterComponent implements AfterContentChecked {
               private route: ActivatedRoute,
               private store: Store<AppState>,
               private dialog: MatDialog) {
-    this.characterService.films = this.route.snapshot.data['films'];
+    this.characterService.films = this.route.snapshot.data['films'].results;
     this.state$ = store.pipe(select(selectSwapi));
     this.state$.subscribe(state => {
-      this.charactersIds = state.charactersIds;
       this.datasource = this.characters = state.characters.results;
       this.length = state.characters.count;
       this.selectedFilm = state.selectedFilm;
@@ -47,15 +45,7 @@ export class CharacterComponent implements AfterContentChecked {
     })
   }
 
-  ngAfterContentChecked(): void {
-    if (!this.selectedFilm && this.characters.length === 0 && !this.loading) {
-      this.store.dispatch(GetCharacterAction());
-      this.store.dispatch(BeginGetCharactersAction({payload: 1}));
-    }
-  }
-
   search() {
-    this.store.dispatch(GetCharacterAction());
     this.store.dispatch(BeginGetCharactersAction({payload: this.pageIndex + 1}));
   }
 
@@ -80,6 +70,12 @@ export class CharacterComponent implements AfterContentChecked {
   onPageChange($event: PageEvent) {
     this.pageIndex = $event.pageIndex;
     this.search();
+  }
+
+  ngAfterContentChecked(): void {
+    if (!this.selectedFilm && this.characters.length === 0 && !this.loading) {
+      this.search();
+    }
   }
 
 }

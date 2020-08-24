@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {Action} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
-import {catchError, map, mergeMap} from 'rxjs/operators';
+import {catchError, map, switchMap} from 'rxjs/operators';
 import * as SwapiActions from './swapi.actions';
 import {FilmService} from "../../components/film/film.service";
 import {Film} from "../../components/shared/model/film";
@@ -21,10 +21,10 @@ export class SwapiEffects {
   getFilms: Observable<Action> = createEffect(() =>
     this.action$.pipe(
       ofType(SwapiActions.BeginGetFilmsAction),
-      mergeMap((action) =>
+      switchMap(() =>
         this.filmService.getFilms().pipe(
-          map((data: Film[]) => {
-            return SwapiActions.SuccessGetFilmAction({payload: data});
+          map((data: ApiResponse<Film[]>) => {
+            return SwapiActions.SuccessGetFilmAction(data);
           }),
           catchError((error: Error) => {
             return of(SwapiActions.ErrorAction(error));
@@ -37,10 +37,10 @@ export class SwapiEffects {
   getCharacters: Observable<Action> = createEffect(() =>
     this.action$.pipe(
       ofType(SwapiActions.BeginGetCharactersAction),
-      mergeMap((action) =>
-        fromPromise(this.characterService.getCharacters(action.payload)).pipe(
+      switchMap((action: { payload: number }) =>
+        this.characterService.getCharacters(action.payload).pipe(
           map((data: ApiResponse<Character[]>) => {
-            return SwapiActions.SuccessGetCharacterAction({payload: data});
+            return SwapiActions.SuccessGetCharacterAction(data);
           }),
           catchError((error: Error) => {
             return of(SwapiActions.ErrorAction(error));
@@ -52,20 +52,20 @@ export class SwapiEffects {
 
   getCharactersById: Observable<Action> = createEffect(() =>
     this.action$.pipe(
-      ofType(SwapiActions.BeginGetCharactersByIdAction),
-      mergeMap((action) =>
-        fromPromise(this.characterService.getCharactersByIds(action.payload.ids)).pipe(
-          map((data: Character[]) => {
-            return SwapiActions.SuccessGetCharacterAction({
-              payload: {
+      ofType(SwapiActions.BeginGetCharactersByFilmAction),
+      switchMap((action: Film) => {
+          const ids = action.characters.map(f => f.replace(/\D/g, ''));
+          return fromPromise(this.characterService.getCharactersByIds(ids)).pipe(
+            map((data: Character[]) => {
+              return SwapiActions.SuccessGetCharacterAction({
                 results: data
-              }
-            });
-          }),
-          catchError((error: Error) => {
-            return of(SwapiActions.ErrorAction(error));
-          })
-        )
+              });
+            }),
+            catchError((error: Error) => {
+              return of(SwapiActions.ErrorAction(error));
+            })
+          )
+        }
       )
     )
   );
