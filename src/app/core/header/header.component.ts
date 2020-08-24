@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpStatusService} from "../http.status.service";
 import {Store} from "@ngrx/store";
-import {SwapiState} from "../store/swapi.state";
+import {AppState} from "../store/swapi.state";
 import {BeginGetCharactersAction} from "../store/swapi.actions";
 import {Router} from "@angular/router";
 
@@ -17,7 +17,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(private httpService: HttpStatusService,
               private router: Router,
-              private store: Store<{ state: SwapiState }>) {
+              private store: Store<AppState>) {
   }
 
   ngOnInit(): void {
