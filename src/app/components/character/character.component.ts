@@ -1,12 +1,12 @@
-import {AfterContentChecked, Component} from '@angular/core';
+import {AfterContentChecked, Component, OnDestroy, OnInit} from '@angular/core';
 import {CharacterService} from "./character.service";
 import {Character} from "../shared/model/character";
 import {Film} from "../shared/model/film";
 import {PageEvent} from "@angular/material/paginator";
 import {ActivatedRoute} from "@angular/router";
-import {select, Store} from "@ngrx/store";
-import {AppState, SwapiState} from "../../core/store/swapi.state";
-import {Observable} from "rxjs";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../core/store/swapi.state";
+import {Subscription} from "rxjs";
 import {BeginGetCharactersAction} from "../../core/store/swapi.actions";
 import {AnimatedOpeningComponent} from "../shared/animated-opening/animated-opening.component";
 import {MatDialog} from "@angular/material/dialog";
@@ -17,8 +17,7 @@ import {selectSwapi} from "../../core/store/swapi.selectors";
   templateUrl: './character.component.html',
   styleUrls: ['./character.component.scss']
 })
-export class CharacterComponent implements AfterContentChecked {
-  state$: Observable<SwapiState>;
+export class CharacterComponent implements OnInit, AfterContentChecked, OnDestroy {
   datasource: Character[];
   characters: Character[];
   selectedFilm: Film;
@@ -30,23 +29,28 @@ export class CharacterComponent implements AfterContentChecked {
   pageSize = 10;
   pageSizeOptions: number[] = [10];
 
+  private stateSub: Subscription;
+
   constructor(private characterService: CharacterService,
               private route: ActivatedRoute,
               private store: Store<AppState>,
               private dialog: MatDialog) {
-    this.characterService.films = this.route.snapshot.data['films'].results;
-    this.state$ = store.pipe(select(selectSwapi));
-    this.state$.subscribe(state => {
-      this.datasource = this.characters = state.characters.results;
-      this.length = state.characters.count;
-      this.selectedFilm = state.selectedFilm;
-      this.loading = state.loading;
-      this.filter(this.filterValue);
-    })
+  }
+
+  ngOnInit(): void {
+    this.stateSub = this.store
+      .select(selectSwapi)
+      .subscribe(state => {
+        this.datasource = this.characters = state.characters.results;
+        this.length = state.characters.count;
+        this.selectedFilm = state.selectedFilm;
+        this.loading = state.loading;
+        this.filter(this.filterValue);
+      })
   }
 
   search() {
-    this.store.dispatch(BeginGetCharactersAction({payload: this.pageIndex + 1}));
+    this.store.dispatch(BeginGetCharactersAction({page: this.pageIndex + 1}));
   }
 
   filter(value: string = '') {
@@ -75,6 +79,12 @@ export class CharacterComponent implements AfterContentChecked {
   ngAfterContentChecked(): void {
     if (!this.selectedFilm && this.characters.length === 0 && !this.loading) {
       this.search();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.stateSub) {
+      this.stateSub.unsubscribe();
     }
   }
 

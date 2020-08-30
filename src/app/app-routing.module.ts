@@ -12,7 +12,7 @@ const routes: Routes = [
   {
     path: 'character',
     component: CharacterComponent,
-    resolve: {films: CharacterResolver}
+    resolve: [CharacterResolver]
   },
   {path: '**', redirectTo: ''}
 ];

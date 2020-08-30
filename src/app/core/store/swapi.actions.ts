@@ -10,7 +10,7 @@ export const SuccessGetFilmAction = createAction('[Film] - Success Get Films',
 );
 
 export const BeginGetCharactersAction = createAction('[Character] - Begin Get Characters',
-  props<{ payload: number }>());
+  props<{ page: number }>());
 
 export const BeginGetCharactersByFilmAction = createAction('[Character] - Begin Get Characters By Film',
   props<Film>());
@@ -20,4 +20,4 @@ export const SuccessGetCharacterAction = createAction('[Character] - Success Get
 );
 
 export const ErrorAction = createAction('[Common] - Error',
-  props<Error>());
+  props<{ error: Error }>());

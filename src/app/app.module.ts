@@ -15,7 +15,7 @@ import {HttpStatusInterceptor} from "./core/interceptor/http.status.interceptor"
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {SwapiReducer} from "./core/store/swapi.reducers";
+import {reducer} from "./core/store/swapi.reducers";
 import {EffectsModule} from "@ngrx/effects";
 import {SwapiEffects} from "./core/store/swapi.effects";
 import {AnimatedOpeningComponent} from './components/shared/animated-opening/animated-opening.component';
@@ -51,7 +51,7 @@ import {ServiceWorkerModule} from "@angular/service-worker";
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    StoreModule.forRoot({state: SwapiReducer}),
+    StoreModule.forRoot({state: reducer}),
     EffectsModule.forRoot([SwapiEffects]),
     StoreDevtoolsModule.instrument({logOnly: environment.production}),
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production})

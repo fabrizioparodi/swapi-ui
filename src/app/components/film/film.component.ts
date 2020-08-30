@@ -3,9 +3,9 @@ import {FilmService} from "./film.service";
 import {Film} from "../shared/model/film";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import {AppState, SwapiState} from "../../core/store/swapi.state";
-import {BeginGetCharactersByFilmAction, BeginGetFilmsAction} from "../../core/store/swapi.actions";
+import * as SwapiActions from "../../core/store/swapi.actions";
 import {MatDialog} from "@angular/material/dialog";
 import {AnimatedOpeningComponent} from "../shared/animated-opening/animated-opening.component";
 import {selectSwapi} from "../../core/store/swapi.selectors";
@@ -25,12 +25,12 @@ export class FilmComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.state$ = this.store.pipe(select(selectSwapi));
-    this.store.dispatch(BeginGetFilmsAction());
+    this.state$ = this.store.select(selectSwapi);
+    this.store.dispatch(SwapiActions.BeginGetFilmsAction());
   }
 
   goToCharacters(film: Film) {
-    this.store.dispatch(BeginGetCharactersByFilmAction(film));
+    this.store.dispatch(SwapiActions.BeginGetCharactersByFilmAction(film));
     this.router.navigate(['character']);
   }
 

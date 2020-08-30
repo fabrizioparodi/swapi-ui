@@ -24,10 +24,11 @@ export class SwapiEffects {
       switchMap(() =>
         this.filmService.getFilms().pipe(
           map((data: ApiResponse<Film[]>) => {
+            this.characterService.films = data.results;
             return SwapiActions.SuccessGetFilmAction(data);
           }),
           catchError((error: Error) => {
-            return of(SwapiActions.ErrorAction(error));
+            return of(SwapiActions.ErrorAction({error}));
           })
         )
       )
@@ -37,13 +38,13 @@ export class SwapiEffects {
   getCharacters: Observable<Action> = createEffect(() =>
     this.action$.pipe(
       ofType(SwapiActions.BeginGetCharactersAction),
-      switchMap((action: { payload: number }) =>
-        this.characterService.getCharacters(action.payload).pipe(
+      switchMap((action: { page: number }) =>
+        this.characterService.getCharacters(action.page).pipe(
           map((data: ApiResponse<Character[]>) => {
             return SwapiActions.SuccessGetCharacterAction(data);
           }),
           catchError((error: Error) => {
-            return of(SwapiActions.ErrorAction(error));
+            return of(SwapiActions.ErrorAction({error}));
           })
         )
       )
@@ -62,7 +63,7 @@ export class SwapiEffects {
               });
             }),
             catchError((error: Error) => {
-              return of(SwapiActions.ErrorAction(error));
+              return of(SwapiActions.ErrorAction({error}));
             })
           )
         }
