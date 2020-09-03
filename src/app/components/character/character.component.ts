@@ -18,11 +18,10 @@ import {selectSwapi} from "../../core/store/swapi.selectors";
   styleUrls: ['./character.component.scss']
 })
 export class CharacterComponent implements OnInit, AfterContentChecked, OnDestroy {
-  datasource: Character[];
+  filterValue: string = '';
   characters: Character[];
   selectedFilm: Film;
   loading: boolean;
-  filterValue: string = '';
 
   length = 0;
   pageIndex = 0;
@@ -41,11 +40,10 @@ export class CharacterComponent implements OnInit, AfterContentChecked, OnDestro
     this.stateSub = this.store
       .select(selectSwapi)
       .subscribe(state => {
-        this.datasource = this.characters = state.characters.results;
+        this.characters = state.characters.results;
         this.length = state.characters.count;
         this.selectedFilm = state.selectedFilm;
         this.loading = state.loading;
-        this.filter(this.filterValue);
       })
   }
 
@@ -53,14 +51,13 @@ export class CharacterComponent implements OnInit, AfterContentChecked, OnDestro
     this.store.dispatch(BeginGetCharactersAction({page: this.pageIndex + 1}));
   }
 
-  filter(value: string = '') {
-    this.filterValue = value;
-    this.datasource = this.characters.filter(char => {
-      return char.name.toUpperCase().includes(value.toUpperCase()) ||
-        char.eye_color.toUpperCase().includes(value.toUpperCase()) ||
-        char.gender.toUpperCase().includes(value.toUpperCase()) ||
-        char.films.find(f => f.title.toUpperCase().includes(value.toUpperCase()))
-    });
+  filter(characters: Character[]) {
+    return characters.filter(char =>
+      char.name.toUpperCase().includes(this.filterValue.toUpperCase()) ||
+      char.eye_color.toUpperCase().includes(this.filterValue.toUpperCase()) ||
+      char.gender.toUpperCase().includes(this.filterValue.toUpperCase()) ||
+      char.films.find(f => f.title.toUpperCase().includes(this.filterValue.toUpperCase()))
+    );
   }
 
   showFilmOpening(elem: Film) {

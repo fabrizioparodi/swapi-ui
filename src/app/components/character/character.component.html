@@ -4,7 +4,7 @@
   <mat-card class="mat-card mb3 mr3">
     <mat-form-field class="w-100" appearance="standard">
       <mat-label>Filter</mat-label>
-      <input matInput #val placeholder="Enter name, eye color, gender, film names..." (keyup)="filter(val.value)">
+      <input [(ngModel)]="filterValue" matInput placeholder="Enter name, eye color, gender, film names...">
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
   </mat-card>
@@ -12,7 +12,7 @@
 
 <span *ngIf="!loading">
   <div class="w-100 justify-center" fxLayout="row wrap" fxLayoutGap="16px grid">
-    <div fxFlex="30%" fxFlex.xs="90%" fxFlex.sm="30%" *ngFor="let elem of datasource">
+    <div *ngFor="let elem of filter(characters)" fxFlex="30%" fxFlex.sm="30%" fxFlex.xs="90%">
       <mat-card class="mat-elevation-z4 medium-card">
         <mat-card-header>
           <div mat-card-avatar class="header-image"></div>
