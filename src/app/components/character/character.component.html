@@ -12,19 +12,19 @@
 
 <span *ngIf="!loading">
   <div class="w-100 justify-center" fxLayout="row wrap" fxLayoutGap="16px grid">
-    <div *ngFor="let elem of filter(characters)" fxFlex="30%" fxFlex.sm="30%" fxFlex.xs="90%">
+    <div *ngFor="let char of filter(characters)" fxFlex="30%" fxFlex.sm="30%" fxFlex.xs="90%">
       <mat-card class="mat-elevation-z4 medium-card">
         <mat-card-header>
           <div mat-card-avatar class="header-image"></div>
-          <mat-card-title>{{ elem.name }}</mat-card-title>
-          <mat-card-subtitle>{{ elem.birth_year }}</mat-card-subtitle>
+          <mat-card-title>{{ char.name }}</mat-card-title>
+          <mat-card-subtitle>{{ char.birth_year }}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <div><b>Eye color:</b> {{ elem.eye_color }}</div>
-          <div><b>Gender:</b> {{ elem.gender }}</div>
+          <div><b>Eye color:</b> {{ char.eye_color }}</div>
+          <div><b>Gender:</b> {{ char.gender }}</div>
           <div><b>Films:</b></div>
           <ul>
-            <li class="pointer dark-blue hover-light-blue" *ngFor="let film of elem.films"
+            <li *ngFor="let film of char.films" class="pointer dark-blue hover-light-blue"
                 (click)="showFilmOpening(film)">{{ film.title }}</li>
           </ul>
         </mat-card-content>
